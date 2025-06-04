@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-light-primary: #f7f7f5;
+  --color-dark-primary: #302f2c;
+  --color-text-secondary: #757575;
+  --color-orange-accent: #ff5734;
+  --color-yellow-accent: #fccc42;
+  --color-text-field: #f1f1f1;
+  --color-button-green: #00bd35;
+  --color-button-red: #ff4848;
+  --color-button-yellow: #ddaa00;
+
+  --font-sans: "Inter", sans-serif;
+  --font-roboto: "Roboto", sans-serif;
+}
+
+.nav-link-desktop-uncollapsed {
+  @apply h-[50px] flex items-center rounded-sm cursor-pointer;
+}
+
+.nav-link-desktop-collapsed {
+  @apply h-[50px] w-[50px] flex items-center justify-center rounded-sm cursor-pointer;
+}
+
+.nav-link-mobile {
+  @apply h-[50px] w-[50px] flex items-center justify-center rounded-sm cursor-pointer;
+}
+
+.video-thumbnail {
+  @apply flex items-center justify-center bg-light-primary text-dark-primary border border-dark-primary;
+}
+.video-title {
+  @apply font-sans font-bold text-[16px];
+}
+.text-secondary {
+  @apply font-sans text-[14px] font-normal text-text-secondary;
+}
+
+.filters-bar {
+  @apply flex items-center px-4 space-x-2;
+}
+.filter-button {
+  @apply h-[34px] flex items-center px-2 rounded-md border border-dark-primary;
+}
+
+.filter-open {
+  @apply absolute mt-1 bg-light-primary border border-dark-primary rounded-md shadow-lg;
+}
+
+.filter-option {
+  @apply px-2 py-1 hover:bg-gray-200 cursor-pointer;
+}
