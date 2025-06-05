@@ -11,7 +11,7 @@ export default function BarChart() {
     options: {
       chart: {
         type: "bar",
-        height: 350,
+        height: 500,
         toolbar: { show: false },
       },
       colors: ["#00bd35"], // Green color for the bar
@@ -33,12 +33,12 @@ export default function BarChart() {
 
   return (
     <div>
-      <div id="chart">
+      <div id="chart" className="w-[100%]">
         <Chart
           options={state.options}
           series={state.series}
           type="bar"
-          width="100%"
+          width="500px"
           height="100%"
         />
       </div>

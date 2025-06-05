@@ -1,0 +1,74 @@
+const dummyEventData = [
+  {
+    id: 1,
+    title: "Introduction to Cloud Computing",
+    category: "Tech",
+    date: "2025-06-10",
+    time: "10:00 AM - 12:00 PM",
+    location: "Room 301, HQ",
+    description:
+      "A beginner-friendly session on cloud computing concepts and their applications in banking.",
+    organizer: "IT Department",
+    speakers: ["Jane Doe", "John Smith"],
+    capacity: 50,
+    registered: 32,
+  },
+  {
+    id: 2,
+    title: "Career Progression: Building Your Path",
+    category: "Career Progression",
+    date: "2025-06-15",
+    time: "2:00 PM - 4:00 PM",
+    location: "Auditorium A",
+    description:
+      "Learn strategies for advancing your career within the bank, including mentorship and upskilling.",
+    organizer: "HR Department",
+    speakers: ["Emily Chen"],
+    capacity: 100,
+    registered: 78,
+  },
+  {
+    id: 3,
+    title: "Finance Fundamentals for Non-Finance Staff",
+    category: "Finance",
+    date: "2025-06-20",
+    time: "9:00 AM - 11:00 AM",
+    location: "Room 210, HQ",
+    description:
+      "An overview of key financial concepts and reports relevant to all departments.",
+    organizer: "Finance Department",
+    speakers: ["Michael Lee"],
+    capacity: 40,
+    registered: 25,
+  },
+  {
+    id: 4,
+    title: "Cybersecurity Awareness",
+    category: "Tech",
+    date: "2025-06-22",
+    time: "1:00 PM - 3:00 PM",
+    location: "Online (Teams)",
+    description:
+      "Best practices for keeping data secure and recognizing phishing attempts.",
+    organizer: "IT Security",
+    speakers: ["Priya Patel"],
+    capacity: 200,
+    registered: 150,
+  },
+  {
+    id: 5,
+    title: "Personal Finance Management",
+    category: "Finance",
+    date: "2025-06-25",
+    time: "11:00 AM - 12:30 PM",
+    location: "Room 105, Branch Office",
+    description:
+      "Tips and tools for managing your personal finances, budgeting, and saving.",
+    organizer: "Employee Wellness",
+    speakers: ["Carlos Gomez"],
+    capacity: 30,
+    registered: 18,
+  },
+];
+
+export default dummyEventData;

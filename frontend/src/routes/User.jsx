@@ -1,152 +1,253 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import { useEmployee } from "../context/EmployeeProvider.jsx";
 import Header from "../components/Reusables/Headers/AltHeader/Header";
-import ModalButton from "../components/Reusables/Buttons/ModalButton";
+import dummyData from "../dummyData";
 
 export default function User() {
+  const navigate = useNavigate();
+  const { setName, name: contextName } = useEmployee();
+
+  // Find the person based on the entered BRID
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
+    brid: "",
+    tc: "",
+    businessUnit: "",
+    teamName: "",
+    role: "",
   });
-  const [errors, setErrors] = useState({});
+  const [showSections, setShowSections] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const timerRef = useRef();
 
-  function validate() {
-    const errors = {};
+  // Find the person in dummyData by BRID
+  const matchedPerson = dummyData.find((d) => d.brid === form.brid);
 
-    if (form.email !== "jamiefurlong16@gmail.com") {
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-        errors.email = "Please enter a valid email address.";
-      }
-    }
+  // Override statuses to "pending" if this is the context employee
+  let adGroupList = matchedPerson?.adGroupList || [];
+  let softwareNames =
+    matchedPerson?.applicationName?.map((a) => a.appName).join("\n") || "";
 
-    if (form.oldPassword || form.newPassword || form.confirmPassword) {
-      if (!form.oldPassword) {
-        errors.oldPassword = "Please enter your old password.";
-      }
-      if (!form.newPassword) {
-        errors.newPassword = "Please enter a new password.";
-      }
-      if (form.newPassword !== form.confirmPassword) {
-        errors.confirmPassword = "New passwords do not match.";
-      }
-    }
-
-    return errors;
+  if (matchedPerson && matchedPerson.name === contextName) {
+    adGroupList = adGroupList.map((g) => ({
+      ...g,
+      requestStatus: "pending",
+      attestation: "no",
+      statusLabel: "Pending",
+    }));
+    softwareNames =
+      matchedPerson.applicationName
+        ?.map((a) => `${a.appName} (Pending)`)
+        .join("\n") || "";
   }
 
+  // Simulate autofill when correct brid is typed
   function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "brid") {
+      const person = dummyData.find((d) => d.brid === value);
+      if (person) {
+        setForm({
+          brid: value,
+          tc: String(person.tc || ""),
+          businessUnit: String(person.businessUnit || ""),
+          teamName: String(person.teamName || ""),
+          role: String(person.role || ""),
+        });
+      } else {
+        setForm({
+          brid: value,
+          tc: "",
+          businessUnit: "",
+          teamName: "",
+          role: "",
+        });
+      }
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+    setConfirmed(false); // Reset confirmation if any field changes
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length === 0) {
-      if (window.confirm("Are you sure you want to update your settings?")) {
-        // Submit logic here
-        alert("Settings updated!");
-      }
-    }
-  }
+  // Only allow confirm if all fields are filled AND brid matches a real user
+  const allFilled = Object.values(form).every((v) => v.trim() !== "");
+  const canConfirm = allFilled && !!matchedPerson;
+
+  // Only run spinner after confirmation
+  useEffect(() => {
+    if (!confirmed) return;
+
+    setLoading(true);
+    timerRef.current = setTimeout(() => {
+      setShowSections(true);
+      setLoading(false);
+    }, 1200);
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [confirmed]);
 
   return (
     <div className="bg-light-primary">
       <Header />
       <div className="p-4">
-        <h1 className="text-[18px] font-sans font-semibold">Settings</h1>
+        <h1 className="text-[18px] font-sans font-semibold">
+          Raise Requests for Your New Joiner
+        </h1>
         <p className="text-text-secondary text-[14px] font-sans">
-          Change the settings you want below and click submit!
+          Fill out the employee details and the requests will be automatically
+          filled!
         </p>
         <hr className="border-[#A5A5A5] my-2" />
         <div className="flex flex-col">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col space-y-4 w-[50%]">
               <div className="flex flex-col">
-                <label className="text-secondary py-2">Your Name</label>
+                <label className="text-secondary py-2">Employee Brid</label>
                 <input
                   type="text"
-                  name="name"
-                  value={form.name}
+                  name="brid"
+                  value={form.brid}
                   onChange={handleChange}
                   className="rounded-[8px] bg-text-field px-4 py-2 border-1"
                 />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-secondary py-2">Your Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="rounded-[8px] bg-text-field px-4 py-2 border-1"
-                />
-                {errors.email && (
-                  <span className="text-red-500 text-xs">{errors.email}</span>
-                )}
-              </div>
-              <div className="flex flex-col">
-                <label className="text-secondary py-2">Your Old Password</label>
-                <input
-                  type="password"
-                  name="oldPassword"
-                  value={form.oldPassword}
-                  onChange={handleChange}
-                  className="rounded-[8px] bg-text-field px-4 py-2 border-1"
-                />
-                {errors.oldPassword && (
-                  <span className="text-red-500 text-xs">
-                    {errors.oldPassword}
+                {form.brid && !matchedPerson && (
+                  <span className="text-red-500 text-sm mt-1">
+                    Please enter a valid BRID for this data set.
                   </span>
                 )}
               </div>
               <div className="flex flex-col">
-                <label className="text-secondary py-2">Your New Password</label>
+                <label className="text-secondary py-2">TC</label>
                 <input
-                  type="password"
-                  name="newPassword"
-                  value={form.newPassword}
+                  type="text"
+                  name="tc"
+                  value={form.tc}
                   onChange={handleChange}
                   className="rounded-[8px] bg-text-field px-4 py-2 border-1"
+                  disabled={!!form.brid}
                 />
-                {errors.newPassword && (
-                  <span className="text-red-500 text-xs">
-                    {errors.newPassword}
-                  </span>
-                )}
               </div>
               <div className="flex flex-col">
-                <label className="text-secondary py-2">
-                  Confirm Your New Password
-                </label>
+                <label className="text-secondary py-2">Business Unit</label>
                 <input
-                  type="password"
-                  name="confirmPassword"
-                  value={form.confirmPassword}
+                  type="text"
+                  name="businessUnit"
+                  value={form.businessUnit}
                   onChange={handleChange}
                   className="rounded-[8px] bg-text-field px-4 py-2 border-1"
+                  disabled={!!form.brid}
                 />
-                {errors.confirmPassword && (
-                  <span className="text-red-500 text-xs">
-                    {errors.confirmPassword}
-                  </span>
-                )}
               </div>
-              <div className="flex justify-between items-center">
-                <button
-                  type="submit"
-                  className="p-2 bg-orange-accent text-light-primary rounded-md text-[16px] font-sans font-semibold w-50"
-                >
-                  Confirm Changes
-                </button>
+              <div className="flex flex-col">
+                <label className="text-secondary py-2">Team Name</label>
+                <input
+                  type="text"
+                  name="teamName"
+                  value={form.teamName}
+                  onChange={handleChange}
+                  className="rounded-[8px] bg-text-field px-4 py-2 border-1"
+                  disabled={!!form.brid}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-secondary py-2">Role</label>
+                <input
+                  type="text"
+                  name="role"
+                  value={form.role}
+                  onChange={handleChange}
+                  className="rounded-[8px] bg-text-field px-4 py-2 border-1"
+                  disabled={!!form.brid}
+                />
               </div>
             </div>
+            {/* Show confirm button if all fields filled, brid is correct, and not yet confirmed */}
+            {canConfirm && !confirmed && (
+              <div className="flex justify-end mt-4">
+                <button
+                  type="button"
+                  className="p-2 bg-blue-600 text-white rounded-md text-[16px] font-sans font-semibold"
+                  onClick={() => setConfirmed(true)}
+                >
+                  Confirm Info
+                </button>
+              </div>
+            )}
+            {(loading || showSections) && confirmed && (
+              <div className="flex flex-col py-3 mt-5">
+                {loading ? (
+                  <div className="flex items-center gap-2 text-blue-600 py-6">
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      />
+                    </svg>
+                    Loading recommendations...
+                  </div>
+                ) : (
+                  <>
+                    {/* AD Group List */}
+                    <div className="flex flex-col w-[50%] mb-6">
+                      <label className="text-secondary py-2">
+                        AD Group List
+                      </label>
+                      <div className="rounded-[8px] bg-text-field px-4 py-2 border-1 whitespace-pre-line">
+                        {adGroupList.map((g, idx) => (
+                          <div key={g.adGroupName + idx} className="mb-4">
+                            <div>{g.adGroupName}</div>
+                            <div className="text-sm text-gray-700">
+                              {g.entitlementData}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex flex-col w-[50%] mb-6">
+                      <label className="text-secondary py-2">
+                        Software Name
+                      </label>
+                      <textarea
+                        name="softwareName"
+                        value={softwareNames}
+                        readOnly
+                        rows={Math.max(3, softwareNames.split("\n").length)}
+                        className="rounded-[8px] bg-text-field px-4 py-2 border-1 resize-y"
+                      />
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <button
+                        type="button"
+                        className="p-2 bg-orange-accent text-light-primary rounded-md text-[16px] font-sans font-semibold w-50"
+                        onClick={() => {
+                          setName(matchedPerson?.name || "");
+                          navigate("/progress");
+                        }}
+                      >
+                        Confirm Changes
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </form>
-          <div>
-            <ModalButton type="deleteAccount">Delete Account? </ModalButton>
-          </div>
         </div>
       </div>
     </div>

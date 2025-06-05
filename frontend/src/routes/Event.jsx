@@ -1,9 +1,18 @@
+import EventGrid from "../components/EventGrid/EventGrid";
+import dummyEventData from "../dummyEventData";
+
 export default function Event() {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <h1 className="text-2xl font-bold mb-4">Event</h1>
-      <p className="text-gray-600">This is the Event page.</p>
-      {/* You can add more content or components here as needed */}
+    <div className="p-4">
+      <h1 className="font-semibold text-2xl text-dark-primary">
+        Upcoming Recommended Events
+      </h1>
+      <p className="font-light text-text-secondary mb-4">
+        Here we draw on multiple sources to bring you trainings, workshops and
+        events from Barclays worldwide based on your roles, skills and
+        interests.
+      </p>
+      <EventGrid data={dummyEventData} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import UserIconSmall from "../assets/UserIconSmall";
 import GridButton from "../components/Reusables/Buttons/GridButton";
 import stockImage from "../assets/Thumbnail.png";
 
-export default function Post() {
+export default function EventPost() {
   const { id } = useParams();
   const location = useLocation();
 

@@ -7,6 +7,7 @@ import User from "./routes/User.jsx";
 import Logout from "./routes/Logout.jsx";
 import Knowledge from "./routes/Knowledge.jsx";
 import Event from "./routes/Event.jsx";
+import EventPost from "./routes/EventPost.jsx";
 
 export default createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export default createBrowserRouter([
       { path: "logout", Component: Logout },
       { path: "/knowledge", Component: Knowledge },
       { path: "/event", Component: Event },
+      { path: "eventpost/:id", Component: EventPost },
     ],
   },
 ]);

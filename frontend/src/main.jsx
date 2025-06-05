@@ -6,14 +6,17 @@ import "./index.css";
 import ModalProvider from "./components/Reusables/Modal/ModalContext";
 import ModalManager from "./components/Reusables/Modal/ModalManager";
 import AuthProvider from "./auth/UserContext.jsx";
+import { EmployeeProvider } from "./context/EmployeeProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <ModalProvider>
-        <RouterProvider router={router} />
-        <ModalManager />
-      </ModalProvider>
+      <EmployeeProvider>
+        <ModalProvider>
+          <RouterProvider router={router} />
+          <ModalManager />
+        </ModalProvider>
+      </EmployeeProvider>
     </AuthProvider>
   </StrictMode>
 );
